@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Calculator</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    .error-icon {
+        display: none;
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Tax Calculator</h2>
+    <form id="taxForm">
+        <div class="form-group">
+            <label for="income"> Enter Extra Income (Lakhs):</label>
+            <input type="number" class="form-control" id="income" placeholder=" enter  Extra Income (Lakhs):">
+            <span class="error-icon" id="incomeErrorIcon">&#9888;</span>
+        </div>
+        <div class="form-group">
+            <label for="extraIncome" > Enter Extra Income (Lakhs):</label>
+            <input type="number" class="form-control" id="extraIncome" placeholder=" enter extra Income (Lakhs)">
+            <span class="error-icon" id="extraIncomeErrorIcon">&#9888;</span>
+        </div>
+        <div class="form-group">
+            <label for="age"> Enter Age group:</label>
+            <select class="form-control" id="age" >
+                <option value="<40">&lt;40</option>
+                <option value=">=40&<60">&ge;40 &lt;60</option>
+                <option value=">=60">&ge;60</option>
+            </select>
+            <span class="error-icon" id="ageErrorIcon" >&#9888;</span>
+        </div>
+        <div class="form-group">
+            <label for="deductions"> Enter total applicable deductions (Lakhs):</label>
+            <input type="number" class="form-control" id="deductions" placeholder="Enter total applicable deductions (Lakhs)">
+            <span class="error-icon" id="deductionsErrorIcon">&#9888;</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<div class="modal" id="resultModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Tax Calculation Result</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="resultBody">
+                <!-- Result will be displayed here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Hide error icons by default
+        $(".error-icon").hide();
+
+        $("#taxForm").submit(function(event) {
+            event.preventDefault();
+
+            // Reset error styles
+            $(".form-control").removeClass("is-invalid");
+            $(".error-icon").hide();
+
+            // Get form values
+            var income = parseFloat($("#income").val());
+            var extraIncome = parseFloat($("#extraIncome").val());
+            var age = $("#age").val();
+            var deductions = parseFloat($("#deductions").val());
+
+            // Validate form fields
+            var isValid = true;
+            if (isNaN(income) || income < 0) {
+                $("#income").addClass("is-invalid");
+                $("#incomeErrorIcon").show();
+                isValid = false;
+            }
+            if (isNaN(extraIncome) || extraIncome < 0) {
+                $("#extraIncome").addClass("is-invalid");
+                $("#extraIncomeErrorIcon").show();
+                isValid = false;
+            }
+            if (!age) {
+                $("#age").addClass("is-invalid");
+                $("#ageErrorIcon").show();
+                isValid = false;
+            }
+            if (isNaN(deductions) || deductions < 0) {
+                $("#deductions").addClass("is-invalid");
+                $("#deductionsErrorIcon").show();
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Calculate tax
+                var taxRate = 0;
+                if (age === "<40") {
+                    taxRate = 0.3;
+                } else if (age === ">=40&<60") {
+                    taxRate = 0.4;
+                } else {
+                    taxRate = 0.1;
+                }
+                var totalIncome = income + extraIncome;
+                var taxableIncome = Math.max(totalIncome + deductions - 8, 0);
+                var taxAmount = taxRate * taxableIncome;
+
+                // Show result modal
+                $("#resultBody").html("<p>Tax Amount: " + taxAmount.toFixed(2) + " Lakhs</p>");
+                $("#resultModal").modal("show");
+            }
+        });
+    });
+</script>
+</body>
+</html>

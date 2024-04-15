@@ -1,0 +1,26 @@
+/* styles.css */
+.modal-dialog {
+    max-width: 500px;
+}
+
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0 auto;
+    }
+}
+
+#resultModal .modal-content {
+    background-color: #ab6d3d;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+}
+
+#resultBody {
+    text-align: center;
+    font-size: 20px;
+    padding: 20px;
+}
+
+#resultModal .modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
